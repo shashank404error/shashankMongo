@@ -135,3 +135,17 @@ func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccou
 	}
     return businessAccount
 }
+
+func FetchLoginProfile(connectionInfo *ConnectToDataBase,username string, password string) *BusinessAccount{
+	
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	
+	filter := bson.M{"username": username,"password": password}
+    err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
+	if err != nil {
+		log.Println(err)
+	}
+    return businessAccount
+}
