@@ -136,7 +136,7 @@ func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccou
     return businessAccount
 }
 
-func FetchLoginProfile(connectionInfo *ConnectToDataBase,username string, password string) *BusinessAccount{
+func FetchLogin(connectionInfo *ConnectToDataBase,username string, password string) *BusinessAccount{
 	
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
