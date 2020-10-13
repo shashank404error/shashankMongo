@@ -163,9 +163,9 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 }
 
 //GetZone is exported
-func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) BusinessAccount{
+func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
 
-	var account BusinessAccount
+	//var account BusinessAccount
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
@@ -178,9 +178,11 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(zones)
+
+	//fetch other account details
+	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
 	account.ZoneDetailInfo=zones
-	account.UserID=docID
-	fmt.Println(account)
+	//account.UserID=docID
+
     return account
 }
