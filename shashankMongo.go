@@ -2,6 +2,7 @@ package shashankMongo
 
 import (
 	"fmt"
+	"reflect"
 	"context"
 	"os"
 	"log"
@@ -187,7 +188,9 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	//fetch other account details
 	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
 	account.ZoneDetailInfo=zones
-	fmt.Println(&zones)
+	fmt.Println(reflect.TypeOf(account))
+	fmt.Println(account)
+	fmt.Println(reflect.TypeOf(zones))
 
     return account
 }
