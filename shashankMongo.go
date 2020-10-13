@@ -42,7 +42,7 @@ type ZoneInfo struct {
 var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
-var zones []*ZoneInfo
+var zones []ZoneInfo
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
@@ -175,5 +175,5 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(&zones)
+	fmt.Println(zones)
 }
