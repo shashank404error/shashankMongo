@@ -145,6 +145,7 @@ func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccou
     return businessAccount
 }
 
+//FetchLogin is exported
 func FetchLogin(connectionInfo *ConnectToDataBase,username string, password string) (*BusinessAccount, error){
 	
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
