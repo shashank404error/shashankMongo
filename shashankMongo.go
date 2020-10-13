@@ -32,7 +32,7 @@ type BusinessAccount struct{
 	BusinessPlan string `bson: "businessplan" json: "businessplan"`
 	ProfileConfig ProfileConfig `bson: "profileConfig" json: "profileConfig"`
 	UserID string
-	ZoneDetailInfo *[]ZoneInfo
+	ZoneDetailInfo []ZoneInfo
 }
 
 type ZoneInfo struct {
@@ -43,7 +43,7 @@ type ZoneInfo struct {
 var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
-var zones *[]ZoneInfo
+var zones []ZoneInfo
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
@@ -163,9 +163,9 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 }
 
 //GetZone is exported
-func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
+func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) BusinessAccount{
 
-	var account *BusinessAccount
+	var account BusinessAccount
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
