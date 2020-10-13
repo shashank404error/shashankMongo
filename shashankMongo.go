@@ -175,5 +175,5 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(zones)
+	fmt.Println(&zones)
 }
