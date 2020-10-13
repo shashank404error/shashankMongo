@@ -25,12 +25,14 @@ type ProfileConfig struct{
 }
 
 type BusinessAccount struct{
+	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	UserName string `bson: "username" json: "username"`
 	BusinessName string `bson: "businessname" json: "businessname"`
 	Password string `bson: "password" json: "password"`
 	City string `bson: "city" json: "city"`
 	BusinessPlan string `bson: "businessplan" json: "businessplan"`
 	ProfileConfig ProfileConfig `bson: "profileConfig" json: "profileConfig"`
+	UserID string
 }
 
 var resultID string
@@ -133,6 +135,7 @@ func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccou
 	if err != nil {
 		log.Println(err)
 	}
+	businessAccount.UserID=docID
     return businessAccount
 }
 
@@ -147,5 +150,8 @@ func FetchLogin(connectionInfo *ConnectToDataBase,username string, password stri
 	if err != nil {
 		log.Println(err)
 	}
+	resultID = businessAccount.ID.Hex()
+	businessAccount.UserID = resultID
+	fmt.Println(businessAccount)
 	return businessAccount,err
 }
