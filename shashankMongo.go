@@ -32,6 +32,7 @@ type BusinessAccount struct{
 	BusinessPlan string `bson: "businessplan" json: "businessplan"`
 	ProfileConfig ProfileConfig `bson: "profileConfig" json: "profileConfig"`
 	UserID string
+	ZoneDetailInfo []ZoneInfo
 }
 
 type ZoneInfo struct {
@@ -162,7 +163,7 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 }
 
 //GetZone is exported
-func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) {
+func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
@@ -175,5 +176,7 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(zones)
+	businessAccount.ZoneDetailInfo=zones
+	businessAccount.UserID=docID
+    return businessAccount
 }
