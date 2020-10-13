@@ -46,7 +46,7 @@ type ZoneInfo struct {
 var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
-var zones *[]ZoneInfo
+var zones []ZoneInfo
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
@@ -180,17 +180,16 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 		log.Fatal(err)
 	}
 
-	for _,v:= range *zones{
-		v.UserID = v.ID.Hex()
-		fmt.Println(v.UserID)
+	for i,v:= range zones{
+		zones[i].UserID = v.ID.Hex()
 	}
 	//fetch other account details
 	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
-	account.ZoneDetailInfo=*zones
+	account.ZoneDetailInfo=zones
 	fmt.Println(reflect.TypeOf(account))
 	fmt.Println(account)
-	fmt.Println(reflect.TypeOf(*zones))
-	fmt.Println(&zones)
+	fmt.Println(reflect.TypeOf(zones))
+	fmt.Println(zones)
 
     return account
 }
