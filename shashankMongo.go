@@ -178,7 +178,9 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(zones)
 	account.ZoneDetailInfo=zones
 	account.UserID=docID
+	fmt.Println(account)
     return account
 }
