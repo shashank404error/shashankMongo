@@ -162,7 +162,8 @@ func FetchLogin(connectionInfo *ConnectToDataBase,username string, password stri
 	return businessAccount,err
 }
 
-func getZone(connectionInfo *ConnectToDataBase,docID string) {
+//GetZone is exported
+func GetZone(connectionInfo *ConnectToDataBase,docID string) {
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
