@@ -40,6 +40,7 @@ type ZoneInfo struct {
 	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	Name string `bson: "name" json: "name"`
 	BusinessUID string `bson: "businessUid" json: "businessUid"`
+	DeliveryInZone string `bson: "deliveryInZone" json: "deliveryInZone"`
 	UserID string
 }
 
