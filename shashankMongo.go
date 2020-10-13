@@ -36,8 +36,10 @@ type BusinessAccount struct{
 }
 
 type ZoneInfo struct {
+	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 	Name string `bson: "name" json: "name"`
 	BusinessUID string `bson: "businessUid" json: "businessUid"`
+	UserID string
 }
 
 var resultID string
@@ -178,11 +180,13 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	if err = cursor.All(ctx, &zones); err != nil {
 		log.Fatal(err)
 	}
-
+	for _,v:= range zones{
+		v.UserID = v.ID.Hex()
+	}
 	//fetch other account details
 	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
 	account.ZoneDetailInfo=zones
-	//account.UserID=docID
+	fmt.Println(zones)
 
     return account
 }
