@@ -187,7 +187,7 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	//fetch other account details
 	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
 	account.ZoneDetailInfo=zones
-	fmt.Println(zones)
+	fmt.Println(&zones)
 
     return account
 }
