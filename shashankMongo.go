@@ -14,7 +14,6 @@ import (
 type ConnectToDataBase struct {
 	CustomApplyURI string 
 	DatabaseName string 
-	CollectionName string 
 }
 
 type ProfileConfig struct{
@@ -58,11 +57,11 @@ func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	return c,ctx
 }
 
-func InsertOne(connectionInfo *ConnectToDataBase,customInsertStruct map[string]interface{}) string {
+func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
 	
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 
 	result, insertErr := collectionName.InsertOne(ctx, customInsertStruct)
 	if insertErr != nil {
@@ -79,11 +78,11 @@ func InsertOne(connectionInfo *ConnectToDataBase,customInsertStruct map[string]i
 
 }
 
-func UpdateOneByID(connectionInfo *ConnectToDataBase,docID string,insertKey string, insertValue string) int64 {
+func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey string, insertValue string) int64 {
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
 	update := bson.M{"$set": bson.M{insertKey: insertValue}}
@@ -96,11 +95,11 @@ func UpdateOneByID(connectionInfo *ConnectToDataBase,docID string,insertKey stri
 	return res.ModifiedCount
 }
 
-func FetchProfileConfiguration(connectionInfo *ConnectToDataBase,filterValue string) *ProfileConfig{
+func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, filterValue string) *ProfileConfig{
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"plan": filterValue}
     err:= collectionName.FindOne(ctx, filter).Decode(&profileConfig)
@@ -110,11 +109,11 @@ func FetchProfileConfiguration(connectionInfo *ConnectToDataBase,filterValue str
     return profileConfig
 }
 
-func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase,docID string,config *ProfileConfig) int64 {
+func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, docID string,config *ProfileConfig) int64 {
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
 	update := bson.M{"$set": bson.M{"profileConfig": config}}
@@ -129,11 +128,11 @@ func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase,docID string,c
 
 }
 
-func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccount{
+func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 	
 	id, _ := primitive.ObjectIDFromHex(docID)
 	filter := bson.M{"_id": id}
@@ -146,11 +145,11 @@ func FetchProfile(connectionInfo *ConnectToDataBase,docID string) *BusinessAccou
 }
 
 //FetchLogin is exported
-func FetchLogin(connectionInfo *ConnectToDataBase,username string, password string) (*BusinessAccount, error){
+func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, username string, password string) (*BusinessAccount, error){
 	
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"username": username,"password": password}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
@@ -163,11 +162,11 @@ func FetchLogin(connectionInfo *ConnectToDataBase,username string, password stri
 }
 
 //GetZone is exported
-func GetZone(connectionInfo *ConnectToDataBase,docID string) {
+func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) {
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(connectionInfo.CollectionName)
+	collectionName := databaseName.Collection(collectionString)
 
 	cursor, err := collectionName.Find(ctx, bson.M{"businessUid":docID})
 	if err != nil {
