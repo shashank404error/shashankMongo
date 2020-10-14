@@ -238,3 +238,17 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 	}
 	return document
 }
+
+func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) ([]ZoneInfo ,error) {
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	filter := bson.M{"name": zoneID,"businessUid": docID}
+    err:= collectionName.FindOne(ctx, filter).Decode(&zones)
+	if err != nil {
+		log.Println(err)
+		return zones,err
+	}
+	return zones,nil	
+}
