@@ -3,6 +3,7 @@ package shashankMongo
 import (
 	"fmt"
 	"context"
+	"reflect"
 	"os"
 	"log"
     "go.mongodb.org/mongo-driver/bson"
@@ -217,4 +218,20 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 	fmt.Println("Delivery Info assigned to "+docID)
 	return res.ModifiedCount
 
+}
+
+func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, docID string) {
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	var document bson.M
+	id, _ := primitive.ObjectIDFromHex(docID)
+	filter := bson.M{"_id": id}
+	err:= collectionName.FindOne(ctx, filter).Decode(&document)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(document)
+	fmt.Println(reflect.TypeOf(document))
 }
