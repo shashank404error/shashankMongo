@@ -240,7 +240,7 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 	return document
 }
 
-func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (*ZoneInfo ,error) {
+func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (*ZoneInfo , int, error) {
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
@@ -249,7 +249,11 @@ func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string ,
     err:= collectionName.FindOne(ctx, filter).Decode(&zoneSingle)
 	if err != nil {
 		log.Println(err)
-		return zoneSingle,err
+		return zoneSingle,0,err
 	}
-	return zoneSingle,nil	
+	var index int
+	for index, _ = range zoneSingle.DeliveryDetail {
+	   index=index+1
+	}
+	return zoneSingle,index,nil	
 }
