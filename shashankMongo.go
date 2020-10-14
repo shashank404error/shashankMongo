@@ -61,6 +61,16 @@ type DeliveryDetail struct {
 	LongLat string `bson: "longlat" json: "longlat"`
 } 
 
+type MapBoxResp struct {
+	Code   string `json:"code"`
+	Routes []RoutesResp
+}
+
+type RoutesResp struct {
+	Distance float64 `json:"distance"`
+	Duration float64 `json:"duration"`
+}
+
 
 var resultID string
 var profileConfig *ProfileConfig
