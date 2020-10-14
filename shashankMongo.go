@@ -207,7 +207,7 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
-	update := bson.M{"$push": bson.M{"deliveryDetail": deliveryStruct}}
+	update := bson.M{"$push": bson.M{"deliveryDetail": bson.M{"$each": deliveryStruct }}}
 		filter := bson.M{"_id": id}
 		res,err := collectionName.UpdateOne(ctx,filter, update)
 		if err!=nil{
