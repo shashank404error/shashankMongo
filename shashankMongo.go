@@ -25,6 +25,7 @@ type ProfileConfig struct{
 
 type BusinessAccount struct{
 	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	PicURL string `bson: "picurl" json: "picurl"`
 	UserName string `bson: "username" json: "username"`
 	BusinessName string `bson: "businessname" json: "businessname"`
 	Password string `bson: "password" json: "password"`
@@ -37,6 +38,7 @@ type BusinessAccount struct{
 
 type ZoneInfo struct {
 	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	PicURL string `bson: "picurl" json: "picurl"`
 	Name string `bson: "name" json: "name"`
 	BusinessUID string `bson: "businessUid" json: "businessUid"`
 	DeliveryInZone string `bson: "deliveryInZone" json: "deliveryInZone"`
@@ -49,6 +51,7 @@ type ZoneInfo struct {
 type DeliveryDetail struct {
 	CustomerName string `bson: "cusotmername" json: "cusotmername"`
 	CustomerMob string `bson: "cusotmermob" json: "cusotmermob"`
+	PicURL string `bson: "picurl" json: "picurl"`
 	Address string `bson: "address" json: "address"`
 	Latitude float64 `bson: "latitude" json: "latitude"`
 	Longitude float64 `bson: "longitude" json: "longitude"`
