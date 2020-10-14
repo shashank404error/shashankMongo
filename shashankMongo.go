@@ -108,7 +108,7 @@ func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionStri
 	filter := bson.M{"plan": filterValue}
     err:= collectionName.FindOne(ctx, filter).Decode(&profileConfig)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
     return profileConfig
 }
@@ -142,7 +142,7 @@ func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, do
 	filter := bson.M{"_id": id}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 	businessAccount.UserID=docID
     return businessAccount
@@ -158,7 +158,7 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 	filter := bson.M{"username": username,"password": password}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
 	resultID = businessAccount.ID.Hex()
 	businessAccount.UserID = resultID
