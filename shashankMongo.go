@@ -200,7 +200,7 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
     return account
 }
 
-func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString string, docID string,deliveryStruct *[]DeliveryDetail) int64 {
+func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString string, docID string,deliveryStruct []DeliveryDetail) int64 {
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
