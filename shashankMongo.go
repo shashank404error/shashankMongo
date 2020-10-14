@@ -3,7 +3,6 @@ package shashankMongo
 import (
 	"fmt"
 	"context"
-	"reflect"
 	"os"
 	"log"
     "go.mongodb.org/mongo-driver/bson"
@@ -220,7 +219,7 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 
 }
 
-func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, docID string) {
+func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, docID string) primitive.M {
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
@@ -232,6 +231,5 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(document)
-	fmt.Println(reflect.TypeOf(document))
+	return document
 }
