@@ -43,7 +43,7 @@ type ZoneInfo struct {
 	BusinessUID string `bson: "businessUid" json: "businessUid"`
 	DeliveryInZone string `bson: "deliveryInZone" json: "deliveryInZone"`
 	UserID string
-	DeliveryDetailInfo []DeliveryDetail `bson: "deliveryDetail" json: "deliveryDetail"`
+	DeliveryDetail []DeliveryDetail `bson: "deliveryDetail" json: "deliveryDetail"`
 	Longitude string `bson: "longitude" json: "longitude"`
 	Latitude string `bson: "latitude" json: "latitude"`
 }
