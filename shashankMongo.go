@@ -41,7 +41,18 @@ type ZoneInfo struct {
 	BusinessUID string `bson: "businessUid" json: "businessUid"`
 	DeliveryInZone string `bson: "deliveryInZone" json: "deliveryInZone"`
 	UserID string
+	DeliveryDetailInfo []DeliveryDetail `bson: "deliveryDetail" json: "deliveryDetail"`
 }
+
+type DeliveryDetail struct {
+	CustomerName string `bson: "cusotmername" json: "cusotmername"`
+	CustomerMob string `bson: "cusotmermob" json: "cusotmermob"`
+	Address string `bson: "address" json: "address"`
+	Latitude float64 `bson: "latitude" json: "latitude"`
+	Longitude float64 `bson: "longitude" json: "longitude"`
+	LongLat string `bson: "longlat" json: "longlat"`
+} 
+
 
 var resultID string
 var profileConfig *ProfileConfig
@@ -187,4 +198,23 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 	account:=FetchProfile(connectionInfo,"businessAccounts",docID)
 	account.ZoneDetailInfo=zones
     return account
+}
+
+func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString string, docID string,deliveryStruct *[]DeliveryDetail) int64 {
+
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	id, _ := primitive.ObjectIDFromHex(docID)
+	update := bson.M{"$set": bson.M{"deliveryDetail": deliveryStruct}}
+		filter := bson.M{"_id": id}
+		res,err := collectionName.UpdateOne(ctx,filter, update)
+		if err!=nil{
+			log.Fatal(err)
+		}
+
+	fmt.Println("Delivery Info assigned to "+docID)
+	return res.ModifiedCount
+
 }
