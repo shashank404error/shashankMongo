@@ -63,7 +63,7 @@ var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
 var zones []ZoneInfo
-var zoneSingle ZoneInfo
+var zoneSingle *ZoneInfo
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
@@ -240,7 +240,7 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 	return document
 }
 
-func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (ZoneInfo ,error) {
+func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (*ZoneInfo ,error) {
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
