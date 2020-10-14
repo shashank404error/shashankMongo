@@ -51,6 +51,8 @@ type ZoneInfo struct {
 
 type DeliveryDetail struct {
 	CustomerName string `bson: "cusotmername" json: "cusotmername"`
+	DistanceFromYou float64 
+	ETA float64
 	CustomerMob string `bson: "cusotmermob" json: "cusotmermob"`
 	PicURL string `bson: "picurl" json: "picurl"`
 	Address string `bson: "address" json: "address"`
