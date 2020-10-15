@@ -290,3 +290,20 @@ func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString strin
 	fmt.Println("One address delivered to "+fieldIdentifier)
 	return res.ModifiedCount
 }	
+
+func UpdateOneByFilters(connectionInfo *ConnectToDataBase, collectionString string,filter1 string,filter2 string,insertKey string, insertValue string) int64 {
+
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	filter := bson.M{ "businessUid":filter1,"name":  filter2}
+	
+	update := bson.M{"$set": bson.M{insertKey: insertValue}}
+	res,err := collectionName.UpdateOne(ctx,filter, update)
+	if err!=nil{
+		log.Fatal(err)
+	}
+
+	return res.ModifiedCount
+}
