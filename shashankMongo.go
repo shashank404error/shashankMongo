@@ -273,3 +273,20 @@ func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string ,
 	indexString:=strconv.Itoa(index)
 	return zoneSingle,indexString,nil	
 }
+
+func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString string,fieldIdentifier string, filter1 string,filter2 string) int64 {
+	
+	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	change := bson.M{"$pull": bson.M{"deliveryDetail": bson.M{ "customermob": fieldIdentifier}}}
+	filter := bson.M{ "businessUid":filter1,"name":  filter2}
+	res,err := collectionName.UpdateOne(ctx,filter, change)
+	if err!=nil{
+		fmt.Println(err)
+		return 0
+	}
+	fmt.Println("One address delivered to "+fieldIdentifier)
+	return res.ModifiedCount
+}	
