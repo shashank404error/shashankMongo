@@ -59,6 +59,7 @@ type DeliveryDetail struct {
 	Latitude float64 `bson: "latitude" json: "latitude"`
 	Longitude float64 `bson: "longitude" json: "longitude"`
 	LongLat string `bson: "longlat" json: "longlat"`
+	DeliveryInZone int64
 } 
 
 type MapBoxResp struct {
