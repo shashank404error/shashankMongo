@@ -186,7 +186,7 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 	filter := bson.M{"username": username,"password": password}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	resultID = businessAccount.ID.Hex()
 	businessAccount.UserID = resultID
