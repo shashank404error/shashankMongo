@@ -49,6 +49,7 @@ type ZoneInfo struct {
 	DeliveryDetail []DeliveryDetail `bson: "deliveryDetail" json: "deliveryDetail"`
 	Longitude string `bson: "longitude" json: "longitude"`
 	Latitude string `bson: "latitude" json: "latitude"`
+	Error string
 }
 
 type DeliveryDetail struct {
