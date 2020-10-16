@@ -112,7 +112,7 @@ func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	return c,ctx
 }
 
-func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
+func InsertOne(collectionString string,customInsertStruct map[string]interface{}) string {
 	
 	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	//databaseName := client.Database(connectionInfo.DatabaseName)
