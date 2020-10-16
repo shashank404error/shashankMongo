@@ -86,8 +86,8 @@ var errors error
 var ctx context.Context
 var databaseName *mongo.Database
 
-func init(){
-	c,errors= mongo.NewClient(options.Client().ApplyURI(connectionInfo.CustomApplyURI))
+func Init(){
+	c,errors= mongo.NewClient(options.Client().ApplyURI("mongodb://shashank404error:Y9ivXgMQ5ZrjL4N@parkpoint-shard-00-00.0bxqn.mongodb.net:27017,parkpoint-shard-00-01.0bxqn.mongodb.net:27017,parkpoint-shard-00-02.0bxqn.mongodb.net:27017/parkpoint?ssl=true&replicaSet=atlas-21pobg-shard-0&authSource=admin&retryWrites=true&w=majority"))
 	if errors != nil {
 		log.Fatal(errors)
 	}
@@ -97,7 +97,7 @@ func init(){
 		log.Fatal(errors)
 	}
 
-	databaseName = c.Database(connectionInfo.DatabaseName)
+	databaseName = c.Database("parkpoint")
 }
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
@@ -114,6 +114,27 @@ func initializeClient(applyURI string) (*mongo.Client,context.Context){
 }
 
 func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
+	
+	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	//databaseName := client.Database(connectionInfo.DatabaseName)
+	collectionName := databaseName.Collection(collectionString)
+
+	result, insertErr := collectionName.InsertOne(ctx, customInsertStruct)
+	if insertErr != nil {
+	fmt.Println("InsertOne ERROR:", insertErr)
+	os.Exit(1) // safely exit script on error
+	} else {
+	fmt.Println("InsertOne() API result:", result)
+
+	newID := result.InsertedID
+	fmt.Println("InsertOne() newID:", newID)
+	resultID = newID.(primitive.ObjectID).Hex()
+	}
+	return resultID
+
+}
+
+/*func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
 	
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
@@ -132,7 +153,7 @@ func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customI
 	}
 	return resultID
 
-}
+}*/
 
 func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey string, insertValue string) int64 {
 
