@@ -101,23 +101,8 @@ func init(){
 	databaseName = c.Database("parkpoint")
 }
 
-func initializeClient(applyURI string) (*mongo.Client,context.Context){
-	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
-	if err != nil {
-		log.Fatal(err)
-	}
-	ctx:= context.Background()
-	err = c.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return c,ctx
-}
-
 func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
 	
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	result, insertErr := collectionName.InsertOne(ctx, customInsertStruct)
@@ -134,32 +119,9 @@ func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customI
 	return resultID
 
 }
-
-/*func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
-	
-	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	databaseName := client.Database(connectionInfo.DatabaseName)
-	collectionName := databaseName.Collection(collectionString)
-
-	result, insertErr := collectionName.InsertOne(ctx, customInsertStruct)
-	if insertErr != nil {
-	fmt.Println("InsertOne ERROR:", insertErr)
-	os.Exit(1) // safely exit script on error
-	} else {
-	fmt.Println("InsertOne() API result:", result)
-
-	newID := result.InsertedID
-	fmt.Println("InsertOne() newID:", newID)
-	resultID = newID.(primitive.ObjectID).Hex()
-	}
-	return resultID
-
-}*/
 
 func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey string, insertValue string) int64 {
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
@@ -175,8 +137,6 @@ func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,do
 
 func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, filterValue string) *ProfileConfig{
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"plan": filterValue}
@@ -189,8 +149,6 @@ func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionStri
 
 func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, docID string,config *ProfileConfig) int64 {
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
@@ -208,8 +166,6 @@ func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionStr
 
 func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 	
 	id, _ := primitive.ObjectIDFromHex(docID)
@@ -225,8 +181,6 @@ func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, do
 //FetchLogin is exported
 func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, username string, password string) (*BusinessAccount, error){
 	
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"username": username,"password": password}
@@ -242,8 +196,6 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 //GetZone is exported
 func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	cursor, err := collectionName.Find(ctx, bson.M{"businessUid":docID})
@@ -265,8 +217,6 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 
 func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString string, docID string,deliveryStruct []DeliveryDetail) int64 {
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	id, _ := primitive.ObjectIDFromHex(docID)
@@ -283,8 +233,7 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 }
 
 func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, docID string) primitive.M {
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
+
 	collectionName := databaseName.Collection(collectionString)
 
 	var document bson.M
@@ -298,8 +247,7 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 }
 
 func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (*ZoneInfo , string, error) {
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
+	
 	collectionName := databaseName.Collection(collectionString)
 
 	filter := bson.M{"name": zoneID,"businessUid": docID}
@@ -318,8 +266,6 @@ func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string ,
 
 func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString string,fieldIdentifier string, filter1 string,filter2 string) int64 {
 	
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	change := bson.M{"$pull": bson.M{"deliveryDetail": bson.M{ "customermob": fieldIdentifier}}}
@@ -335,8 +281,6 @@ func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString strin
 
 func UpdateOneByFilters(connectionInfo *ConnectToDataBase, collectionString string,filter1 string,filter2 string,insertKey string, insertValue string) int64 {
 
-	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 
 	filter := bson.M{ "businessUid":filter1,"name":  filter2}
