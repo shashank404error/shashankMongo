@@ -33,6 +33,8 @@ type BusinessAccount struct{
 	City string `bson: "city" json: "city"`
 	BusinessPlan string `bson: "businessplan" json: "businessplan"`
 	ProfileConfig ProfileConfig `bson: "profileConfig" json: "profileConfig"`
+	DeliveryPending string `bson: "deliveryPending" json: "deliveryPending"`
+	DeliveryDelivered string `bson: "deliveryDelivered" json: "deliveryDelivered"`
 	UserID string
 	ZoneDetailInfo []ZoneInfo
 }
