@@ -5,7 +5,6 @@ import (
 	"context"
 	"os"
 	"strconv"
-	"reflect"
 	"log"
     "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -81,21 +80,25 @@ var businessAccount *BusinessAccount
 var zones []ZoneInfo
 var zoneSingle *ZoneInfo
 
-/*var connectionInfo *ConnectToDataBase
+var connectionInfo *ConnectToDataBase
 var c *mongo.Client
 var errors error
 var ctx context.Context
-c,errors= mongo.NewClient(options.Client().ApplyURI(connectionInfo.CustomApplyURI))
-if errors != nil {
-	log.Fatal(errors)
-}
-ctx = context.Background()
+var databaseName *mongo.Database
+
+func init(){
+	c,errors= mongo.NewClient(options.Client().ApplyURI(connectionInfo.CustomApplyURI))
+	if errors != nil {
+		log.Fatal(errors)
+	}
+	ctx = context.Background()
 	errors = c.Connect(ctx)
 	if errors != nil {
 		log.Fatal(errors)
 	}
 
-databaseName := client.Database(connectionInfo.DatabaseName)*/
+	databaseName = c.Database(connectionInfo.DatabaseName)
+}
 
 func initializeClient(applyURI string) (*mongo.Client,context.Context){
 	c,err:= mongo.NewClient(options.Client().ApplyURI(applyURI))
@@ -200,8 +203,8 @@ func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, do
 //FetchLogin is exported
 func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, username string, password string) (*BusinessAccount, error){
 	
-	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
-	databaseName := client.Database(connectionInfo.DatabaseName)
+	//client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
+	//databaseName := client.Database(connectionInfo.DatabaseName)
 	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"username": username,"password": password}
@@ -219,7 +222,6 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
 
 	client,ctx:= initializeClient(connectionInfo.CustomApplyURI)
 	databaseName := client.Database(connectionInfo.DatabaseName)
-	fmt.Println(reflect.TypeOf(databaseName))
 	collectionName := databaseName.Collection(collectionString)
 
 	cursor, err := collectionName.Find(ctx, bson.M{"businessUid":docID})
