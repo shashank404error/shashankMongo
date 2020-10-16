@@ -80,7 +80,6 @@ var businessAccount *BusinessAccount
 var zones []ZoneInfo
 var zoneSingle *ZoneInfo
 
-var connectionInfo *ConnectToDataBase
 var c *mongo.Client
 var errors error
 var ctx context.Context
