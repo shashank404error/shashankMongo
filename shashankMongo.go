@@ -138,6 +138,21 @@ func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,do
 	return res.ModifiedCount
 }
 
+func UpdateTwoByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey1 string, insertValue1 string,insertKey2 string, insertValue2 string) int64 {
+
+	collectionName := databaseName.Collection(collectionString)
+
+	id, _ := primitive.ObjectIDFromHex(docID)
+	update := bson.M{"$set": bson.M{insertKey1: insertValue1,insertKey2: insertValue2}}
+		filter := bson.M{"_id": id}
+		res,err := collectionName.UpdateOne(ctx,filter, update)
+		if err!=nil{
+			log.Fatal(err)
+		}
+
+	return res.ModifiedCount
+}
+
 func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, filterValue string) *ProfileConfig{
 
 	collectionName := databaseName.Collection(collectionString)
@@ -296,4 +311,16 @@ func UpdateOneByFilters(connectionInfo *ConnectToDataBase, collectionString stri
 	}
 
 	return res.ModifiedCount
+}
+
+func FetchAndUpdateProfileDataByID(connectionInfo *ConnectToDataBase, collectionString string,docID string ) int64 {
+
+	businessAccount:=FetchProfile(connectionInfo, collectionString, docID)
+	deliveryPendingInt, _ := strconv.ParseInt(businessAccount.DeliveryPending, 10, 64)
+	newDeliveryPendingString:=	strconv.FormatInt((deliveryPendingInt-1), 10)
+	deliveryDeliveredInt, _ := strconv.ParseInt(businessAccount.DeliveryDelivered, 10, 64)
+	newDeliverydeliveredString:=	strconv.FormatInt((deliveryDeliveredInt+1), 10)
+
+	res:=UpdateTwoByID(connectionInfo, collectionString,docID,"deliveryPending", newDeliveryPendingString,"deliveryDelivered", newDeliverydeliveredString)
+	return res
 }
