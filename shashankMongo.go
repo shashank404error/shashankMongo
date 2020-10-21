@@ -89,7 +89,7 @@ type DeliveredDetail struct {
 
 type DeliveredAndAccount struct {
 	DeliveredDetails []DeliveredDetail
-	BusinessAccount BusinessAccount
+	BusinessAccount *BusinessAccount
 }
 
 var resultID string
