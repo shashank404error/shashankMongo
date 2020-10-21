@@ -87,6 +87,11 @@ type DeliveredDetail struct {
 	BusinessUid string `bson:"businessUid" json:"businessUid"`
 }
 
+type DeliveredAndAccount struct {
+	DeliveredDetails []DeliveredDetail
+	BusinessAccount BusinessAccount
+}
+
 var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
