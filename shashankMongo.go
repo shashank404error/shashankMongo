@@ -76,6 +76,16 @@ type RoutesResp struct {
 	Duration float64 `json:"duration"`
 }
 
+type DeliveredDetail struct {
+	Longitude string `bson:"longitude" json:"longitude"`
+	Latitude string `bson:"latitude" json:"latitude"`
+	CustomerName string `bson:"customerName" json:"customerName"`
+	CustomerMob string `bson:"customerMob" json:"customerMob"`
+	ZoneID string `bson:"zoneId" json:"zoneId"`
+	DateOfDelivery string `bson:"dateOfDelivery" json:"dateOfDelivery"`
+	Address string `bson:"address" json:"address"`
+	BusinessUid string `bson:"businessUid" json:"businessUid"`
+}
 
 var resultID string
 var profileConfig *ProfileConfig
