@@ -294,7 +294,7 @@ func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString strin
 		fmt.Println(err)
 		return 0
 	}
-	fmt.Println("One address delivered to "+fieldIdentifier)
+	fmt.Println("One order delivered to "+fieldIdentifier)
 	return res.ModifiedCount
 }	
 
@@ -323,4 +323,17 @@ func FetchAndUpdateProfileDataByID(connectionInfo *ConnectToDataBase, collection
 
 	res:=UpdateTwoByID(connectionInfo, collectionString,docID,"deliveryPending", newDeliveryPendingString,"deliveryDelivered", newDeliverydeliveredString)
 	return res
+}
+
+func GetFieldByFilter (connectionInfo *ConnectToDataBase, collectionString string, filterKey string, filterValue string) primitive.M {
+
+	collectionName := databaseName.Collection(collectionString)
+
+	var document bson.M
+	filter := bson.M{filterKey: filterValue}
+	err:= collectionName.FindOne(ctx, filter).Decode(&document)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return document
 }
