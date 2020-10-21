@@ -325,15 +325,24 @@ func FetchAndUpdateProfileDataByID(connectionInfo *ConnectToDataBase, collection
 	return res
 }
 
-func GetFieldByFilter (connectionInfo *ConnectToDataBase, collectionString string, filterKey string, filterValue string) primitive.M {
+func GetFieldByFilter (connectionInfo *ConnectToDataBase, collectionString string, filterKey string, filterValue string) []primitive.M {
 
 	collectionName := databaseName.Collection(collectionString)
 
-	var document bson.M
+	var documents []bson.M
 	filter := bson.M{filterKey: filterValue}
-	err:= collectionName.FindOne(ctx, filter).Decode(&document)
+	cursor,err:= collectionName.Find(ctx, filter)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return document
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+    	var document bson.M
+    	if err = cursor.Decode(&document); err != nil {
+       	 log.Fatal(err)
+		}
+		documents = append(documents,document)
+	}
+	
+	return documents
 }
