@@ -92,6 +92,12 @@ type DeliveredAndAccount struct {
 	BusinessAccount *BusinessAccount
 }
 
+type PubnubCredentials struct {
+	SubscribeKey string 
+	PublishKey string
+	UUIDPubnub string
+}
+
 var resultID string
 var profileConfig *ProfileConfig
 var businessAccount *BusinessAccount
