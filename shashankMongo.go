@@ -1,108 +1,30 @@
 package shashankMongo
 
 import (
-	"fmt"
+	//"fmt"
 	"context"
 	//"os"
-	"strconv"
+	//"strconv"
 	log "github.com/sirupsen/logrus"
-	"github.com/bybrisk/structs"
-    "go.mongodb.org/mongo-driver/bson"
+	//"github.com/bybrisk/structs"
+    //"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	//"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type ConnectToDataBase struct {
-	CustomApplyURI string 
-	DatabaseName string 
-}
 
-type ProfileConfig struct{
-	Zone int64 `bson: "zone" json: "zone"`
-	MessagePlan int64 `bson: "messageplan" json: "messageplan"`
-	Tracking bool `bson: "tracking" json: "tracking"`
-	ZoneID []string `bson: "zoneid" json: "zoneid"`
-}
 
-type BusinessAccount struct{
-	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	PicURL string `bson: "picurl" json: "picurl"`
-	UserName string `bson: "username" json: "username"`
-	BusinessName string `bson: "businessname" json: "businessname"`
-	Password string `bson: "password" json: "password"`
-	City string `bson: "city" json: "city"`
-	BusinessPlan string `bson: "businessplan" json: "businessplan"`
-	ProfileConfig ProfileConfig `bson: "profileConfig" json: "profileConfig"`
-	DeliveryPending string `bson: "deliveryPending" json: "deliveryPending"`
-	DeliveryDelivered string `bson: "deliveryDelivered" json: "deliveryDelivered"`
-	UserID string
-	ZoneDetailInfo []ZoneInfo
-}
-
-type ZoneInfo struct {
-	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
-	PicURL string `bson: "picurl" json: "picurl"`
-	Name string `bson: "name" json: "name"`
-	BusinessUID string `bson: "businessUid" json: "businessUid"`
-	DeliveryInZone string `bson: "deliveryInZone" json: "deliveryInZone"`
-	UserID string
-	DeliveryDetail []DeliveryDetail `bson: "deliveryDetail" json: "deliveryDetail"`
-	Longitude string `bson: "longitude" json: "longitude"`
-	Latitude string `bson: "latitude" json: "latitude"`
-	Error string
-}
-
-type DeliveryDetail struct {
-	CustomerName string `bson: "cusotmername" json: "cusotmername"`
-	DistanceFromYou float64 
-	ETA float64
-	CustomerMob string `bson: "cusotmermob" json: "cusotmermob"`
-	PicURL string `bson: "picurl" json: "picurl"`
-	Address string `bson: "address" json: "address"`
-	Latitude float64 `bson: "latitude" json: "latitude"`
-	Longitude float64 `bson: "longitude" json: "longitude"`
-	LongLat string `bson: "longlat" json: "longlat"`
-	DeliveryInZone int64
-	BusinessId string
-} 
-
-type MapBoxResp struct {
-	Code   string `json:"code"`
-	Routes []RoutesResp
-}
-
-type RoutesResp struct {
-	Distance float64 `json:"distance"`
-	Duration float64 `json:"duration"`
-}
-
-type DeliveredDetail struct {
-	Longitude string `bson:"longitude" json:"longitude"`
-	Latitude string `bson:"latitude" json:"latitude"`
-	CustomerName string `bson:"customerName" json:"customerName"`
-	CustomerMob string `bson:"customerMob" json:"customerMob"`
-	ZoneID string `bson:"zoneId" json:"zoneId"`
-	DateOfDelivery string `bson:"dateOfDelivery" json:"dateOfDelivery"`
-	Address string `bson:"address" json:"address"`
-	BusinessUid string `bson:"businessUid" json:"businessUid"`
-}
-
-type DeliveredAndAccount struct {
-	DeliveredDetails []DeliveredDetail
-	BusinessAccount *BusinessAccount
-}
-
-var resultID string
+/*var resultID string
 var profileConfig *structs.ProfileConfig
 var businessAccount *structs.BusinessAccount
 var zones []structs.ZoneInfo
-var zoneSingle *structs.ZoneInfo
+var zoneSingle *structs.ZoneInfo*/
 
 var c *mongo.Client
 var errors error
-var ctx context.Context
-var databaseName *mongo.Database
+var CtxForDB context.Context
+var DatabaseName *mongo.Database
 
 func init(){
 	c,errors= mongo.NewClient(options.Client().ApplyURI("mongodb://shashank404error:Y9ivXgMQ5ZrjL4N@parkpoint-shard-00-00.0bxqn.mongodb.net:27017,parkpoint-shard-00-01.0bxqn.mongodb.net:27017,parkpoint-shard-00-02.0bxqn.mongodb.net:27017/parkpoint?ssl=true&replicaSet=atlas-21pobg-shard-0&authSource=admin&retryWrites=true&w=majority"))
@@ -110,17 +32,17 @@ func init(){
 		log.Error("Error Connecting Database Client")
 		log.Error(errors)
 	}
-	ctx = context.Background()
-	errors = c.Connect(ctx)
+	CtxForDB = context.Background()
+	errors = c.Connect(CtxForDB)
 	if errors != nil {
 		log.Error("error in setting up context")
 		log.Error(errors)
 	}
 
-	databaseName = c.Database("parkpoint")
+	DatabaseName = c.Database("parkpoint")
 }
 
-func InsertOne(connectionInfo *structs.ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
+/*func InsertOne(connectionInfo *structs.ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
 	
 	collectionName := databaseName.Collection(collectionString)
 
@@ -377,3 +299,4 @@ func GetFieldByFilter (connectionInfo *structs.ConnectToDataBase, collectionStri
 	
 	return documents
 }
+*/
