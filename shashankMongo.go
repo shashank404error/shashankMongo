@@ -3,9 +3,10 @@ package shashankMongo
 import (
 	"fmt"
 	"context"
-	"os"
+	//"os"
 	"strconv"
-	"log"
+	log "github.com/sirupsen/logrus"
+	"github.com/bybrisk/structs"
     "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -92,17 +93,11 @@ type DeliveredAndAccount struct {
 	BusinessAccount *BusinessAccount
 }
 
-type PubnubCredentials struct {
-	SubscribeKey string 
-	PublishKey string
-	UUIDPubnub string
-}
-
 var resultID string
-var profileConfig *ProfileConfig
-var businessAccount *BusinessAccount
-var zones []ZoneInfo
-var zoneSingle *ZoneInfo
+var profileConfig *structs.ProfileConfig
+var businessAccount *structs.BusinessAccount
+var zones []structs.ZoneInfo
+var zoneSingle *structs.ZoneInfo
 
 var c *mongo.Client
 var errors error
@@ -112,27 +107,27 @@ var databaseName *mongo.Database
 func init(){
 	c,errors= mongo.NewClient(options.Client().ApplyURI("mongodb://shashank404error:Y9ivXgMQ5ZrjL4N@parkpoint-shard-00-00.0bxqn.mongodb.net:27017,parkpoint-shard-00-01.0bxqn.mongodb.net:27017,parkpoint-shard-00-02.0bxqn.mongodb.net:27017/parkpoint?ssl=true&replicaSet=atlas-21pobg-shard-0&authSource=admin&retryWrites=true&w=majority"))
 	if errors != nil {
-		fmt.Println("error in client")
-		log.Fatal(errors)
+		log.Error("Error Connecting Database Client")
+		log.Error(errors)
 	}
 	ctx = context.Background()
 	errors = c.Connect(ctx)
 	if errors != nil {
-		fmt.Println("error in context")
-		log.Fatal(errors)
+		log.Error("error in setting up context")
+		log.Error(errors)
 	}
 
 	databaseName = c.Database("parkpoint")
 }
 
-func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
+func InsertOne(connectionInfo *structs.ConnectToDataBase,collectionString string,customInsertStruct map[string]interface{}) string {
 	
 	collectionName := databaseName.Collection(collectionString)
 
 	result, insertErr := collectionName.InsertOne(ctx, customInsertStruct)
 	if insertErr != nil {
-	fmt.Println("InsertOne ERROR:", insertErr)
-	os.Exit(1) // safely exit script on error
+		log.Error("InsertOne ERROR:")
+		log.Error(insertErr)
 	} else {
 	fmt.Println("InsertOne() API result:", result)
 
@@ -144,7 +139,7 @@ func InsertOne(connectionInfo *ConnectToDataBase,collectionString string,customI
 
 }
 
-func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey string, insertValue string) int64 {
+func UpdateOneByID(connectionInfo *structs.ConnectToDataBase, collectionString string,docID string,insertKey string, insertValue string) int64 {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -153,13 +148,14 @@ func UpdateOneByID(connectionInfo *ConnectToDataBase, collectionString string,do
 		filter := bson.M{"_id": id}
 		res,err := collectionName.UpdateOne(ctx,filter, update)
 		if err!=nil{
-			log.Fatal(err)
+			log.Error("Update One ERROR:")
+			log.Error(err)
 		}
 
 	return res.ModifiedCount
 }
 
-func UpdateTwoByID(connectionInfo *ConnectToDataBase, collectionString string,docID string,insertKey1 string, insertValue1 string,insertKey2 string, insertValue2 string) int64 {
+func UpdateTwoByID(connectionInfo *structs.ConnectToDataBase, collectionString string,docID string,insertKey1 string, insertValue1 string,insertKey2 string, insertValue2 string) int64 {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -168,25 +164,27 @@ func UpdateTwoByID(connectionInfo *ConnectToDataBase, collectionString string,do
 		filter := bson.M{"_id": id}
 		res,err := collectionName.UpdateOne(ctx,filter, update)
 		if err!=nil{
-			log.Fatal(err)
+			log.Error("UpdateTwoByID ERROR:")
+			log.Error(err)
 		}
 
 	return res.ModifiedCount
 }
 
-func FetchProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, filterValue string) *ProfileConfig{
+func FetchProfileConfiguration(connectionInfo *structs.ConnectToDataBase, collectionString string, filterValue string) *structs.ProfileConfig{
 
 	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"plan": filterValue}
     err:= collectionName.FindOne(ctx, filter).Decode(&profileConfig)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("FetchProfileConfiguration ERROR:")
+		log.Error(err)
 	}
     return profileConfig
 }
 
-func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionString string, docID string,config *ProfileConfig) int64 {
+func UpdateProfileConfiguration(connectionInfo *structs.ConnectToDataBase, collectionString string, docID string,config *structs.ProfileConfig) int64 {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -195,7 +193,8 @@ func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionStr
 		filter := bson.M{"_id": id}
 		res,err := collectionName.UpdateOne(ctx,filter, update)
 		if err!=nil{
-			log.Fatal(err)
+			log.Error("UpdateProfileConfiguration ERROR:")
+			log.Error(err)
 		}
 
 	fmt.Println("profile created")
@@ -203,7 +202,7 @@ func UpdateProfileConfiguration(connectionInfo *ConnectToDataBase, collectionStr
 
 }
 
-func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
+func FetchProfile(connectionInfo *structs.ConnectToDataBase, collectionString string, docID string) *structs.BusinessAccount{
 
 	collectionName := databaseName.Collection(collectionString)
 	
@@ -211,21 +210,23 @@ func FetchProfile(connectionInfo *ConnectToDataBase, collectionString string, do
 	filter := bson.M{"_id": id}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("FetchProfile ERROR:")
+		log.Error(err)
 	}
 	businessAccount.UserID=docID
     return businessAccount
 }
 
 //FetchLogin is exported
-func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, username string, password string) (*BusinessAccount, error){
+func FetchLogin(connectionInfo *structs.ConnectToDataBase, collectionString string, username string, password string) (*structs.BusinessAccount, error){
 	
 	collectionName := databaseName.Collection(collectionString)
 	
 	filter := bson.M{"username": username,"password": password}
     err:= collectionName.FindOne(ctx, filter).Decode(&businessAccount)
 	if err != nil {
-		log.Println(err)
+		log.Error("FetchLogin ERROR:")
+		log.Error(err)
 		return nil, err
 	}
 	resultID = businessAccount.ID.Hex()
@@ -234,16 +235,18 @@ func FetchLogin(connectionInfo *ConnectToDataBase, collectionString string, user
 }
 
 //GetZone is exported
-func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID string) *BusinessAccount{
+func GetZone(connectionInfo *structs.ConnectToDataBase, collectionString string, docID string) *structs.BusinessAccount{
 
 	collectionName := databaseName.Collection(collectionString)
 
 	cursor, err := collectionName.Find(ctx, bson.M{"businessUid":docID})
 	if err != nil {
-		log.Fatal(err)
+		log.Error("GetZone ERROR1:")
+		log.Error(err)
 	}
 	if err = cursor.All(ctx, &zones); err != nil {
-		log.Fatal(err)
+		log.Error("GetZone ERROR2:")
+		log.Error(err)
 	}
 
 	for i,v:= range zones{
@@ -255,7 +258,7 @@ func GetZone(connectionInfo *ConnectToDataBase, collectionString string, docID s
     return account
 }
 
-func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString string, docID string,deliveryStruct []DeliveryDetail) int64 {
+func UpdateDeliveryInfo(connectionInfo *structs.ConnectToDataBase, collectionString string, docID string,deliveryStruct []structs.DeliveryDetail) int64 {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -264,7 +267,8 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 		filter := bson.M{"_id": id}
 		res,err := collectionName.UpdateOne(ctx,filter, update)
 		if err!=nil{
-			log.Fatal(err)
+			log.Error("UpdateDeliveryInfo ERROR:")
+			log.Error(err)
 		}
 
 	fmt.Println("Delivery Info assigned to "+docID)
@@ -272,7 +276,7 @@ func UpdateDeliveryInfo(connectionInfo *ConnectToDataBase, collectionString stri
 
 }
 
-func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, docID string) primitive.M {
+func GetFieldByID (connectionInfo *structs.ConnectToDataBase, collectionString string, docID string) primitive.M {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -281,19 +285,21 @@ func GetFieldByID (connectionInfo *ConnectToDataBase, collectionString string, d
 	filter := bson.M{"_id": id}
 	err:= collectionName.FindOne(ctx, filter).Decode(&document)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("GetFieldByID ERROR:")
+		log.Error(err)
 	}
 	return document
 }
 
-func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string , docID string , zoneID string) (*ZoneInfo , string, error) {
+func FetchZoneInfo (connectionInfo *structs.ConnectToDataBase, collectionString string , docID string , zoneID string) (*structs.ZoneInfo , string, error) {
 	
 	collectionName := databaseName.Collection(collectionString)
 
 	filter := bson.M{"name": zoneID,"businessUid": docID}
     err:= collectionName.FindOne(ctx, filter).Decode(&zoneSingle)
 	if err != nil {
-		log.Println(err)
+		log.Error("FetchZoneInfo ERROR:")
+		log.Error(err)
 		return zoneSingle,"0",err
 	}
 	var index int
@@ -304,7 +310,7 @@ func FetchZoneInfo (connectionInfo *ConnectToDataBase, collectionString string ,
 	return zoneSingle,indexString,nil	
 }
 
-func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString string,fieldIdentifier string, filter1 string,filter2 string) int64 {
+func UpdateFieldInArray(connectionInfo *structs.ConnectToDataBase,collectionString string,fieldIdentifier string, filter1 string,filter2 string) int64 {
 	
 	collectionName := databaseName.Collection(collectionString)
 
@@ -312,14 +318,15 @@ func UpdateFieldInArray(connectionInfo *ConnectToDataBase,collectionString strin
 	filter := bson.M{ "businessUid":filter1,"name":  filter2}
 	res,err := collectionName.UpdateOne(ctx,filter, change)
 	if err!=nil{
-		fmt.Println(err)
+		log.Error("UpdateFieldInArray ERROR:")
+		log.Error(err)
 		return 0
 	}
 	fmt.Println("One order delivered to "+fieldIdentifier)
 	return res.ModifiedCount
 }	
 
-func UpdateOneByFilters(connectionInfo *ConnectToDataBase, collectionString string,filter1 string,filter2 string,insertKey string, insertValue string) int64 {
+func UpdateOneByFilters(connectionInfo *structs.ConnectToDataBase, collectionString string,filter1 string,filter2 string,insertKey string, insertValue string) int64 {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -328,13 +335,14 @@ func UpdateOneByFilters(connectionInfo *ConnectToDataBase, collectionString stri
 	update := bson.M{"$set": bson.M{insertKey: insertValue}}
 	res,err := collectionName.UpdateOne(ctx,filter, update)
 	if err!=nil{
-		log.Fatal(err)
+		log.Error("UpdateOneByFilters ERROR:")
+		log.Error(err)
 	}
 
 	return res.ModifiedCount
 }
 
-func FetchAndUpdateProfileDataByID(connectionInfo *ConnectToDataBase, collectionString string,docID string ) int64 {
+func FetchAndUpdateProfileDataByID(connectionInfo *structs.ConnectToDataBase, collectionString string,docID string ) int64 {
 
 	businessAccount:=FetchProfile(connectionInfo, collectionString, docID)
 	deliveryPendingInt, _ := strconv.ParseInt(businessAccount.DeliveryPending, 10, 64)
@@ -346,7 +354,7 @@ func FetchAndUpdateProfileDataByID(connectionInfo *ConnectToDataBase, collection
 	return res
 }
 
-func GetFieldByFilter (connectionInfo *ConnectToDataBase, collectionString string, filterKey string, filterValue string) []primitive.M {
+func GetFieldByFilter (connectionInfo *structs.ConnectToDataBase, collectionString string, filterKey string, filterValue string) []primitive.M {
 
 	collectionName := databaseName.Collection(collectionString)
 
@@ -354,13 +362,15 @@ func GetFieldByFilter (connectionInfo *ConnectToDataBase, collectionString strin
 	filter := bson.M{filterKey: filterValue}
 	cursor,err:= collectionName.Find(ctx, filter)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("GetFieldByFilter ERROR1:")
+		log.Error(err)
 	}
 	defer cursor.Close(ctx)
 	for cursor.Next(ctx) {
     	var document bson.M
     	if err = cursor.Decode(&document); err != nil {
-       	 log.Fatal(err)
+			log.Error("GetFieldByFilter ERROR2:")
+			log.Error(err)
 		}
 		documents = append(documents,document)
 	}
